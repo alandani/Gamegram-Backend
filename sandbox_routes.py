@@ -104,11 +104,28 @@ def get_sandboxes_feed(db: session_int):
     sandboxes = get_all_sandboxes(db=db)
     return sandboxes
 
+#---------------------
+@router.get("/sandbox1", response_model=SandboxResponse)
+def get_sandbox1(db: session_int,request: Request,sandbox_id= "b3fab486-79fc-46ac-9abc-12c142a82c28"):
+    sandbox = get_sandbox_by_id(db=db, sandbox_id=sandbox_id)
+    if not sandbox:
+        raise HTTPException(status_code=404, detail="Sandbox not found")
+    
+    # Construct runnable URL pointing to your FastAPI proxy
+    runnable_url = str(request.base_url) + f"sandboxes/{sandbox_id}/files/index.html?mode=edit&sandbox_id={sandbox_id}"
+    
+    return {
+        "id": sandbox.id,
+        "name": sandbox.name,
+        "sandbox_url": sandbox.sandbox_url,
+        "runnable_url": runnable_url        # constructed, not from DB
+    }
+#-----------------
 
 # ── GET: specific sandbox by id ───────────────────────────────────
 
 
-@router.get("/{sandbox_id}", response_model=SandboxResponse)
+@router.get("/select/{sandbox_id}", response_model=SandboxResponse)
 def get_sandbox(sandbox_id: UUID, db: session_int,current_user: current_user_dep,request: Request):
     sandbox = get_sandbox_by_id(db=db, sandbox_id=sandbox_id)
     if not sandbox:
