@@ -12,7 +12,7 @@ router = APIRouter(prefix="/games", tags=["Games"])
 
 def build_game_dict(row,baseurl) -> dict:
     game, like_count, dislike_count = row
-    BASE_URL=baseurl
+    BASE_URL='https://gamegram-backend-2fqi.onrender.com/'
     # Construct proxy URL instead of raw Supabase URL
     runnable_url = str(BASE_URL)+f"sandboxes/{game.sandbox.id}/files/index.html?mode=noedit&level_id={game.id}"
     
